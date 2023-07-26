@@ -3,6 +3,7 @@ import * as lambda from 'aws-cdk-lib/aws-lambda';
 import * as apigw from 'aws-cdk-lib/aws-apigateway';
 import { Construct } from 'constructs';
 import { HitCounter } from './hit-counter-construct';
+import { TableViewer } from 'cdk-dynamo-table-viewer';
 
 export class AwsCdkHelloLambdaStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -28,6 +29,11 @@ export class AwsCdkHelloLambdaStack extends cdk.Stack {
         which will log the hit and relay it over to the hello function. 
         Then, the responses will be relayed back in the reverse order all the way to the user
       */
+    });
+
+    new TableViewer(this, 'ViewHitCounter', {
+      title: 'Hello Hits',
+      table: //??????
     });
   }
 }
