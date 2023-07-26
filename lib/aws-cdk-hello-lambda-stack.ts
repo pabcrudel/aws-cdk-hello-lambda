@@ -33,7 +33,7 @@ export class AwsCdkHelloLambdaStack extends cdk.Stack {
 
     new TableViewer(this, 'ViewHitCounter', {
       title: 'Hello Hits',
-      table: //??????
+      table: helloWithCounter.table
     });
   }
 }
