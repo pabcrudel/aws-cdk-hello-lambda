@@ -13,6 +13,9 @@ export class HitCounter extends Construct {
   /** allows accessing the counter function */
   public readonly handler: lambda.Function;
 
+  /** the hit counter table */
+  public readonly table: dynamodb.Table;
+
   constructor(scope: Construct, id: string, props: HitCounterProps) {
     super(scope, id);
 
@@ -23,6 +26,7 @@ export class HitCounter extends Construct {
       },
       removalPolicy: cdk.RemovalPolicy.DESTROY
     });
+    this.table = table;
 
     this.handler = new lambda.Function(this, 'HitCounterHandler', {
       runtime: lambda.Runtime.NODEJS_14_X,
