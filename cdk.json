@@ -8,6 +8,7 @@
       "README.md",
       "cdk*.json",
       "**/*.d.ts",
+      "jest.config.js",
       "tsconfig.json",
       "package*.json",
       "yarn.lock",
