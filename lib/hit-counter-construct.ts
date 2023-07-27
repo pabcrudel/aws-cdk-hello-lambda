@@ -6,6 +6,15 @@ import { Construct } from 'constructs';
 export interface HitCounterProps {
   /** the function for which we want to count url hits **/
   downstream: lambda.IFunction;
+
+  /**
+   * The read capacity units for the table
+   *
+   * Must be greater than 5 and lower than 20
+   *
+   * @default 5
+   */
+  readCapacity?: number;
 }
 
 export class HitCounter extends Construct {
@@ -20,9 +29,9 @@ export class HitCounter extends Construct {
     super(scope, id);
 
     const table = new dynamodb.Table(this, 'Hits', {
-      partitionKey: { 
-        name: 'path', 
-        type: dynamodb.AttributeType.STRING 
+      partitionKey: {
+        name: 'path',
+        type: dynamodb.AttributeType.STRING
       },
       encryption: dynamodb.TableEncryption.AWS_MANAGED,
       removalPolicy: cdk.RemovalPolicy.DESTROY
