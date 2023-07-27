@@ -1,7 +1,8 @@
 import * as cdk from 'aws-cdk-lib';
 import * as codecommit from 'aws-cdk-lib/aws-codecommit';
 import { Construct } from 'constructs';
-import {CodeBuildStep, CodePipeline, CodePipelineSource} from "aws-cdk-lib/pipelines";
+import { PipelineStage } from './pipeline-stage';
+import { CodeBuildStep, CodePipeline, CodePipelineSource } from "aws-cdk-lib/pipelines";
 
 export class PipelineStack extends cdk.Stack {
     constructor(scope: Construct, id: string, props?: cdk.StackProps) {
@@ -13,20 +14,23 @@ export class PipelineStack extends cdk.Stack {
         });
 
         // The basic pipeline declaration. This sets the initial structure of the pipeline
-       const pipeline = new CodePipeline(this, 'Pipeline', {
+        const pipeline = new CodePipeline(this, 'Pipeline', {
             pipelineName: 'WorkshopPipeline',
             synth: new CodeBuildStep('SynthStep', {
-                    input: CodePipelineSource.codeCommit(repo, 'main'),
-                    installCommands: [
-                        'npm install -g aws-cdk'
-                    ],
-                    commands: [
-                        'npm ci',
-                        'npm run build',
-                        'npx cdk synth'
-                    ]
-                }
+                input: CodePipelineSource.codeCommit(repo, 'main'),
+                installCommands: [
+                    'npm install -g aws-cdk'
+                ],
+                commands: [
+                    'npm ci',
+                    'npm run build',
+                    'npx cdk synth'
+                ]
+            }
             )
         });
+
+        const deploy = new PipelineStage(this, 'Deploy');
+        const deployStage = pipeline.addStage(deploy);
     }
 }
