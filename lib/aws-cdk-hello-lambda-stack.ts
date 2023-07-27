@@ -6,6 +6,9 @@ import { HitCounter } from './hit-counter-construct';
 import { TableViewer } from 'cdk-dynamo-table-viewer';
 
 export class AwsCdkHelloLambdaStack extends cdk.Stack {
+  public readonly hcViewerUrl: cdk.CfnOutput;
+  public readonly hcEndpoint: cdk.CfnOutput;
+
   constructor(scope: Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
@@ -22,7 +25,7 @@ export class AwsCdkHelloLambdaStack extends cdk.Stack {
     })
 
     // Defines an API Gateway REST API resource backed by the "hello" function
-    new apigw.LambdaRestApi(this, 'Endpoint', {
+    const gateway = new apigw.LambdaRestApi(this, 'Endpoint', {
       handler: helloWithCounter.handler
       /* 
         API Gateway will route the request to the hit counter handler, 
@@ -31,9 +34,18 @@ export class AwsCdkHelloLambdaStack extends cdk.Stack {
       */
     });
 
-    new TableViewer(this, 'ViewHitCounter', {
+    const tv = new TableViewer(this, 'ViewHitCounter', {
       title: 'Hello Hits',
       table: helloWithCounter.table
+    });
+
+    // Expose TableViewer and ApiGateway endpoints to the CDK Pipeline
+    this.hcEndpoint = new cdk.CfnOutput(this, 'GatewayUrl', {
+      value: gateway.url
+    });
+
+    this.hcViewerUrl = new cdk.CfnOutput(this, 'TableViewerUrl', {
+      value: tv.endpoint
     });
   }
 }
