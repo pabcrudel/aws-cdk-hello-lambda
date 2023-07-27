@@ -34,7 +34,8 @@ export class HitCounter extends Construct {
         type: dynamodb.AttributeType.STRING
       },
       encryption: dynamodb.TableEncryption.AWS_MANAGED,
-      removalPolicy: cdk.RemovalPolicy.DESTROY
+      removalPolicy: cdk.RemovalPolicy.DESTROY,
+      readCapacity: props.readCapacity ?? 5    
     });
     this.table = table;
 
